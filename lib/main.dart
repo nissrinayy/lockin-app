@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'onboarding_page.dart';
+import 'dart:async';
 
 void main() {
   runApp(MyApp());
@@ -9,12 +11,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: SplashScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OnboardingPage()),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +40,8 @@ class SplashScreen extends StatelessWidget {
         child: Center(
           child: Image.asset(
             'assets/logo.png', // Replace with your logo asset name
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
           ),
         ),
       ),
