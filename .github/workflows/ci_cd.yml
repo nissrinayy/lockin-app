@@ -23,7 +23,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.5' # Sesuaikan dengan versi Flutter lokalmu (cek dengan flutter --version)
+          flutter-version: '3.32.5' 
 
       - name: Install dependencies
         run: flutter pub get
@@ -42,7 +42,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           name: app-release
