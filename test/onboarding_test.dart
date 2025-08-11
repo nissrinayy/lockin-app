@@ -6,6 +6,7 @@ import 'package:lockin_app/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+
   testWidgets('Onboarding and Login navigation test', (WidgetTester tester) async {
     // Pump aplikasi
     await tester.pumpWidget(app.MyApp());
