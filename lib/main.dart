@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'onboarding_page.dart';
+import 'login_page.dart';
+import 'home_page.dart';
 import 'dart:async';
 
 void main() {
@@ -10,7 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'GeneralSans', // Ganti dengan nama font kamu
+      ),
       home: SplashScreen(),
+      routes: {
+      '/login': (context) => LoginPage(),
+      '/home': (context) => HomePage(), // jika ada
+    },
     );
   }
 }

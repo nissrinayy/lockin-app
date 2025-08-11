@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.5' # Sesuaikan dengan versi Flutter lokalmu (cek dengan flutter --version)
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run unit tests
+        run: flutter test test
+
+      - name: Run integration tests
+        run: flutter test integration_test
+
+      - name: Build APK
+        run: flutter build apk --release --build-name=1.0.0 --build-number=1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk

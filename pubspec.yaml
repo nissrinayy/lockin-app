@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.0.0
+  shared_preferences: ^2.2.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -37,6 +40,8 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -59,6 +64,40 @@ flutter:
   assets:
     - assets/logo.png
     - assets/puzzle.png
+    - assets/goal.png
+    - assets/living.png
+    - assets/google.png
+  fonts:
+    - family: GeneralSans
+      fonts:
+        - asset: assets/fonts/GeneralSans-Regular.otf
+        - asset: assets/fonts/GeneralSans-Bold.otf
+          weight: 700
+        - asset: assets/fonts/GeneralSans-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/GeneralSans-Extralight.otf
+          weight: 200
+        - asset: assets/fonts/GeneralSans-ExtralightItalic.otf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/GeneralSans-Italic.otf
+          style: italic
+        - asset: assets/fonts/GeneralSans-Light.otf
+          weight: 300
+        - asset: assets/fonts/GeneralSans-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/GeneralSans-Medium.otf
+          weight: 500
+        - asset: assets/fonts/GeneralSans-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/GeneralSans-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/GeneralSans-SemiboldItalic.otf
+          weight: 600
+          style: italic
 
   # To add assets to your application, add an assets section, like this:
   # assets:
