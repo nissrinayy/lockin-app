@@ -44,6 +44,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final data = onboardingData[currentPage];
 
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 255),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: height * 0.02),
@@ -90,7 +91,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.07),
+              SizedBox(height: height * 0.13),
               Image.asset(
                 data['image']!,
                 width: width * 0.7,

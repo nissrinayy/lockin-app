@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
 import 'services/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
+class SignupPage extends StatefulWidget {
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isObscure = true;
   bool isLoading = false;
 
-  Future<void> login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+  Future<void> signup() async {
+    if (nameController.text.isEmpty || 
+        emailController.text.isEmpty || 
+        passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email dan password tidak boleh kosong')),
+        SnackBar(content: Text('Semua field harus diisi')),
+      );
+      return;
+    }
+
+    // Validasi email
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Format email tidak valid')),
+      );
+      return;
+    }
+
+    // Validasi password (minimal 6 karakter)
+    if (passwordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password minimal 6 karakter')),
       );
       return;
     }
@@ -24,7 +42,11 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     try {
-      final result = await AuthService.login(emailController.text, passwordController.text);
+      final result = await AuthService.signup(
+        nameController.text, 
+        emailController.text, 
+        passwordController.text
+      );
       
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -47,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -61,9 +84,9 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: const Color.fromRGBO(255, 255, 255, 255),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: width * 0.06),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.06),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: MediaQuery.of(context).size.height -
@@ -89,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                         end: Alignment.centerRight,
                       ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
                       child: Text(
-                        'Welcome to LockIn',
+                        'Buat Akun Baru',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: width * 0.0773,
@@ -98,14 +121,31 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: height * 0.012),
-                    Text(
-                      'Note important moments and things about yourself',
-                      textAlign: TextAlign.center,
+                    SizedBox(height: height * 0.04),
+                    TextField(
+                      controller: nameController,
+                      keyboardType: TextInputType.name,
                       style: TextStyle(
-                        fontSize: width * 0.032,
-                        color: Color(0xFF94A5AB),
+                        fontSize: width * 0.038,
                         fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Nama',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF94A5AB),
+                          fontSize: width * 0.038,
+                          fontWeight: FontWeight.w300,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xFFD1D8DD)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xFFD1D8DD)),
+                        ),
                       ),
                     ),
                     SizedBox(height: height * 0.014),
@@ -120,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: 'Email Address',
                         hintStyle: TextStyle(
-                          color: Color(0xFF94A5AB), // warna hint
+                          color: Color(0xFF94A5AB),
                           fontSize: width * 0.038,
                           fontWeight: FontWeight.w300,
                         ),
@@ -147,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: 'Password',
                         hintStyle: TextStyle(
-                          color: Color(0xFF94A5AB), // warna hint
+                          color: Color(0xFF94A5AB),
                           fontSize: width * 0.038,
                           fontWeight: FontWeight.w300,
                         ),
@@ -173,34 +213,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: height * 0.008),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: ShaderMask(
-                          shaderCallback: (bounds) => LinearGradient(
-                            colors: [Color(0xFF4782F4), Color(0xFFA08DFA)],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                          child: Text(
-                            'Lupa Password',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: width * 0.032,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: height * 0.01),
+                    SizedBox(height: height * 0.04),
                     SizedBox(
                       width: double.infinity,
                       height: height * 0.06,
                       child: ElevatedButton(
-                        onPressed: isLoading ? null : login,
+                        onPressed: isLoading ? null : signup,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
@@ -223,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: isLoading
                                 ? CircularProgressIndicator(color: Colors.white)
                                 : Text(
-                                    'Masuk',
+                                    'Daftar',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
@@ -234,39 +252,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: height * 0.012),
-                    SizedBox(
-                      width: double.infinity,
-                      height: height * 0.06,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD1D8DD)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: Color(0xFFF6F8FF),
-                        ),
-                        child: Text(
-                          'Daftar Akun',
-                          style: TextStyle(
-                            color: Color(0xFF4782F4),
-                            fontWeight: FontWeight.w500,
-                            fontSize: width * 0.040,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: height * 0.012),
+                    SizedBox(height: height * 0.04),
                     Row(
                       children: [
                         Expanded(child: Divider(color: Color(0xFFD1D8DD))),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            'OR',
+                            'Sudah Punya Akun?',
                             style: TextStyle(
                               color: Color(0xFF94A5AB),
                               fontWeight: FontWeight.w500,
@@ -276,54 +269,28 @@ class _LoginPageState extends State<LoginPage> {
                         Expanded(child: Divider(color: Color(0xFFD1D8DD))),
                       ],
                     ),
-                    SizedBox(height: height * 0.012),
+                    SizedBox(height: height * 0.04),
                     SizedBox(
                       width: double.infinity,
                       height: height * 0.06,
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: Image.asset(
-                          'assets/google.png',
-                          width: width * 0.06,
-                        ),
-                        label: Text(
-                          'Continue with Google',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: width * 0.040,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Color(0xFFD1D8DD)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          backgroundColor: Colors.white,
+                          backgroundColor: Color(0xFFF6F8FF),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: height * 0.01),
-                    SizedBox(
-                      width: double.infinity,
-                      height: height * 0.06,
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: Icon(Icons.apple, color: Colors.black, size: width * 0.06),
-                        label: Text(
-                          'Continue with Apple',
+                        child: Text(
+                          'Masuk',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: width * 0.040,
+                            color: Color(0xFF4782F4),
                             fontWeight: FontWeight.w500,
+                            fontSize: width * 0.040,
                           ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD1D8DD)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: Colors.white,
                         ),
                       ),
                     ),
