@@ -23,7 +23,6 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    // Validasi email
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(emailController.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Format email tidak valid')),
@@ -31,7 +30,6 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
-    // Validasi password (minimal 6 karakter)
     if (passwordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Password minimal 6 karakter')),
@@ -42,12 +40,16 @@ class _SignupPageState extends State<SignupPage> {
     setState(() => isLoading = true);
 
     try {
+      print('Starting signup with name: ${nameController.text}, email: ${emailController.text}');
       final result = await AuthService.signup(
         nameController.text, 
         emailController.text, 
         passwordController.text
       );
-      
+      print('Signup result: $result');
+      print('Result runtime type: ${result.runtimeType}');
+      print('User runtime type: ${result['user'].runtimeType}');
+
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result['message'])),
@@ -59,6 +61,7 @@ class _SignupPageState extends State<SignupPage> {
         );
       }
     } catch (e) {
+      print('Error during signup: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $e')),
       );

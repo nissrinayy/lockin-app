@@ -6,7 +6,6 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -24,8 +23,12 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     try {
+      print('Starting login with email: ${emailController.text}');
       final result = await AuthService.login(emailController.text, passwordController.text);
-      
+      print('Login result: $result');
+      print('Result runtime type: ${result.runtimeType}');
+      print('User runtime type: ${result['user'].runtimeType}');
+
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result['message'])),
@@ -37,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      print('Error during login: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $e')),
       );
@@ -120,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: 'Email Address',
                         hintStyle: TextStyle(
-                          color: Color(0xFF94A5AB), // warna hint
+                          color: Color(0xFF94A5AB),
                           fontSize: width * 0.038,
                           fontWeight: FontWeight.w300,
                         ),
@@ -147,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         hintText: 'Password',
                         hintStyle: TextStyle(
-                          color: Color(0xFF94A5AB), // warna hint
+                          color: Color(0xFF94A5AB),
                           fontSize: width * 0.038,
                           fontWeight: FontWeight.w300,
                         ),

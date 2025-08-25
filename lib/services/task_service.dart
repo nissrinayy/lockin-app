@@ -12,11 +12,13 @@ class TaskService {
     return "$y-$m-$day";
   }
 
+  // Remove anonymous sign-in, just check if user is authenticated
   static Future<User> _ensureSignedIn() async {
     final current = _auth.currentUser;
-    if (current != null) return current;
-    final cred = await _auth.signInAnonymously();
-    return cred.user!;
+    if (current == null) {
+      throw Exception('User not authenticated. Please login first.');
+    }
+    return current;
   }
 
   static Future<String> createTask({
@@ -29,7 +31,8 @@ class TaskService {
     List<Map<String, dynamic>>? subTasks,
   }) async {
     final uid = (await _ensureSignedIn()).uid;
-    print('Creating task for user: $uid'); // Debugging log
+    print('Creating task for user: $uid');
+    
     final total = (subTasks?.length ?? 0);
     final completed = (subTasks == null)
         ? 0
@@ -50,7 +53,8 @@ class TaskService {
       'subTasksCompleted': completed,
       'totalSubTasks': total == 0 ? 1 : total,
     };
-    print('Task data to be sent: $taskData'); // Debugging log
+
+    print('Task data to be sent: $taskData');
 
     int retries = 3;
     while (retries > 0) {
@@ -60,16 +64,16 @@ class TaskService {
             .doc(uid)
             .collection('tasks')
             .add(taskData);
-        print('Task created successfully with ID: ${doc.id}'); // Debugging log
+        print('Task created successfully with ID: ${doc.id}');
         return doc.id;
       } catch (e) {
-        print('Error creating task: $e'); // Debugging log
+        print('Error creating task: $e');
         retries--;
         if (retries == 0) {
           throw Exception('Failed to create task after multiple attempts: $e');
         }
         print('Retrying task creation... ($retries retries left)');
-        await Future.delayed(Duration(seconds: 2)); // Wait before retrying
+        await Future.delayed(Duration(seconds: 2));
       }
     }
     throw Exception('Unexpected error during task creation');
@@ -79,7 +83,7 @@ class TaskService {
     final uid = (await _ensureSignedIn()).uid;
     final ymd = _ymd(date);
     
-    print('Fetching tasks for UID: $uid, Date: $ymd'); // Debug log
+    print('Fetching tasks for UID: $uid, Date: $ymd');
     
     final snap = await _firestore
         .collection('users')
@@ -88,18 +92,14 @@ class TaskService {
         .where('dueYmd', isEqualTo: ymd)
         .orderBy('dueAt')
         .get();
-
+        
     final tasks = snap.docs.map((d) => {
       'id': d.id, 
       ...d.data(),
       'time': _formatTime((d.data()['dueAt'] as Timestamp).toDate()),
     }).toList();
     
-    print('Found ${tasks.length} tasks for date $ymd'); // Debug log
-    for (var task in tasks) {
-      print('Task: ${task['title']} - ${task['dueYmd']}'); // Debug log
-    }
-    
+    print('Found ${tasks.length} tasks for date $ymd');
     return tasks;
   }
 
@@ -113,7 +113,7 @@ class TaskService {
     final uid = (await _ensureSignedIn()).uid;
     final ymd = _ymd(date);
     
-    print('Creating stream for UID: $uid, Date: $ymd'); // Debug log
+    print('Creating stream for UID: $uid, Date: $ymd');
     
     yield* _firestore
         .collection('users')
@@ -129,8 +129,18 @@ class TaskService {
             'time': _formatTime((doc.data()['dueAt'] as Timestamp).toDate()),
           }).toList();
           
-          print('Stream received ${tasks.length} tasks for date $ymd'); // Debug log
+          print('Stream received ${tasks.length} tasks for date $ymd');
           return tasks;
         });
+  }
+
+  // Add method to check if user is logged in
+  static bool isUserLoggedIn() {
+    return _auth.currentUser != null;
+  }
+
+  // Add method to get current user
+  static User? getCurrentUser() {
+    return _auth.currentUser;
   }
 }

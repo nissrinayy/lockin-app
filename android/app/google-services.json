@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "237532529304",
+    "project_id": "lockin-app-c8df2",
+    "storage_bucket": "lockin-app-c8df2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237532529304:android:596ce3621e6032295706ed",
+        "android_client_info": {
+          "package_name": "com.example.lockin_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC42WRFOvbGOOoedE1C4PSoWkQYJq3eBGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

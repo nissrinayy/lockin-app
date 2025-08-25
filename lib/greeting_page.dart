@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'services/auth_service.dart';
 
 class GreetingPage extends StatefulWidget {
   @override
@@ -16,12 +17,13 @@ class _GreetingPageState extends State<GreetingPage> {
   }
 
   Future<void> _loadUserName() async {
-    final prefs = await SharedPreferences.getInstance();
-    final storedName = prefs.getString('name') ?? '';
-    if (!mounted) return;
-    setState(() {
-      _userName = storedName.isNotEmpty ? storedName : 'User';
-    });
+    final user = AuthService.getCurrentUser();
+    if (user != null && user.displayName != null) {
+      if (!mounted) return;
+      setState(() {
+        _userName = user.displayName!;
+      });
+    }
   }
 
   void _continueToNext() {
@@ -142,5 +144,3 @@ class _GreetingPageState extends State<GreetingPage> {
     );
   }
 }
-
-

@@ -9,10 +9,14 @@ import 'signup_page.dart';
 import 'greeting_page.dart';
 import 'services/auth_service.dart';
 import 'dart:async';
+import 'firebase_options.dart'; // Tambahkan file ini jika ada
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    // Gunakan opsi ini jika Anda memiliki konfigurasi spesifik
+    // options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -22,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'GeneralSans', // Ganti dengan nama font kamu
+        fontFamily: 'GeneralSans',
       ),
       home: SplashScreen(),
       routes: {
@@ -37,7 +41,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -51,8 +54,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
-    // Tambah user demo untuk testing
-    await AuthService.addDemoUsers();
+    // Nonaktifkan addDemoUsers karena sudah tidak relevan
+    // await AuthService.addDemoUsers();
     
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
@@ -69,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
         color: const Color.fromRGBO(255, 255, 255, 255),
         child: Center(
           child: Image.asset(
-            'assets/logo.png', // Replace with your logo asset name
+            'assets/logo.png',
             width: 100,
             height: 100,
           ),
