@@ -1,5 +1,5 @@
 const axios = require('axios');
-require('dotenv').config();
+//require('dotenv').config();
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
