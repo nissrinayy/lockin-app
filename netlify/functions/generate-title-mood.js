@@ -1,5 +1,5 @@
+
 const axios = require('axios');
-//require('dotenv').config();
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
@@ -24,20 +24,14 @@ exports.handler = async function(event, context) {
 
   try {
     const response = await axios.post(
-      'https://api.deepseek.com/v1/chat/completions',
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
-        model: 'deepseek-chat',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
+        contents: [
+          { parts: [{ text: prompt }] }
+        ]
       }
     );
-    const text = response.data.choices[0].message.content;
+    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     return {
       statusCode: 200,
       body: JSON.stringify({ result: text }),
@@ -45,7 +39,7 @@ exports.handler = async function(event, context) {
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.toString() }),
+      body: JSON.stringify({ error: err.toString(), response: err.response?.data }),
     };
   }
 };
